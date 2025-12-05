@@ -7,11 +7,7 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== "Administrador") {
     exit;
 }
 
-$query = "SELECT a.id_alumno, a.nombre, a.matricula, g.grado, g.grupo, t.nombre AS tutor 
-          FROM alumnos a
-          LEFT JOIN grupos g ON a.id_grupo = g.id_grupo
-          LEFT JOIN tutores t ON a.id_tutor = t.id_tutor";
-
+$query = "SELECT * FROM grupos";
 $result = $conn->query($query);
 ?>
 
@@ -19,9 +15,9 @@ $result = $conn->query($query);
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Gestión de Alumnos</title>
+    <title>Grupos</title>
 
-    <!-- Bootstrap -->
+    <!-- BOOTSTRAP -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
@@ -29,7 +25,7 @@ $result = $conn->query($query);
             background: #f4f6f9;
             padding: 30px;
         }
-        .table-container {
+        .table-box {
             background: white;
             padding: 25px;
             border-radius: 15px;
@@ -41,64 +37,57 @@ $result = $conn->query($query);
         }
     </style>
 </head>
+
 <body>
 
 <div class="container">
 
-    <h2 class="mb-4 text-center">📘 Lista de Alumnos</h2>
+    <h2 class="mb-4 text-center">🏫 Lista de Grupos</h2>
 
     <!-- Botón agregar -->
     <div class="text-end mb-3">
-        <a href="alumno_nuevo.php" class="btn btn-primary btn-add">
-            ➕ Agregar Alumno
+        <a href="grupo_nuevo.php" class="btn btn-primary btn-add">
+            ➕ Agregar Grupo
         </a>
     </div>
 
     <!-- Tabla -->
-    <div class="table-container">
+    <div class="table-box">
         <table class="table table-striped table-hover">
             <thead class="table-primary">
                 <tr>
                     <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Matrícula</th>
+                    <th>Grado</th>
                     <th>Grupo</th>
-                    <th>Tutor</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
 
             <tbody>
-                <?php while ($row = $result->fetch_assoc()): ?>
+                <?php while ($g = $result->fetch_assoc()): ?>
                 <tr>
-                    <td><?= $row['id_alumno'] ?></td>
-                    <td><?= htmlspecialchars($row['nombre']) ?></td>
-                    <td><?= htmlspecialchars($row['matricula']) ?></td>
-                    <td><?= htmlspecialchars($row['grado'] . " " . $row['grupo']) ?></td>
-                    <td><?= htmlspecialchars($row['tutor']) ?></td>
+                    <td><?= $g['id_grupo'] ?></td>
+                    <td><?= htmlspecialchars($g['grado']) ?></td>
+                    <td><?= htmlspecialchars($g['grupo']) ?></td>
 
                     <td>
-                        <a href="alumno_editar.php?id=<?= $row['id_alumno'] ?>" class="btn btn-sm btn-warning">
+                        <a href="grupo_editar.php?id=<?= $g['id_grupo'] ?>" class="btn btn-sm btn-warning">
                             ✏ Editar
                         </a>
 
-                        <a href="generar_qr.php?id=<?= $row['id_alumno'] ?>" class="btn btn-sm btn-info text-white">
-                            📲 QR
-                        </a>
-
-                        <a href="alumno_eliminar.php?id=<?= $row['id_alumno'] ?>" 
+                        <a href="grupo_eliminar.php?id=<?= $g['id_grupo'] ?>"
                            class="btn btn-sm btn-danger"
-                           onclick="return confirm('¿Eliminar este alumno?')">
+                           onclick="return confirm('¿Eliminar este grupo?')">
                             🗑 Eliminar
                         </a>
                     </td>
                 </tr>
                 <?php endwhile; ?>
             </tbody>
+
         </table>
     </div>
 
-    <!-- Volver al panel -->
     <div class="text-center mt-4">
         <a href="panel.php" class="btn btn-secondary">
             ⬅ Volver al Panel
